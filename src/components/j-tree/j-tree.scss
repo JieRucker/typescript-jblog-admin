@@ -1,0 +1,179 @@
+.j-tree-wrapper {
+  .j-tree-panel {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    color: #333;
+    li {
+      position: relative;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      text-align: left;
+      white-space: nowrap;
+      line-height: 36px;
+      z-index: 9;
+      ul {
+        padding-left: 10px;
+      }
+      a {
+        min-width: 100%;
+        height: 36px;
+        cursor: pointer;
+        padding-left: 10px;
+        color: #333;
+        background-color: transparent;
+        text-decoration: none;
+        vertical-align: middle;
+        display: inline-block;
+        .input-rename {
+          height: 25px;
+          padding: 4px 2px;
+          width: 50%;
+          border-radius: 2px;
+          border: 1px solid #dddee1;
+        }
+        &:hover {
+          background-color: #EDF7ED;
+          text-decoration: none;
+          color: #56a848;
+          span.button {
+            &.add {
+              opacity: 1;
+            }
+            &.edit {
+              opacity: 1;
+            }
+            &.remove {
+              opacity: 1;
+            }
+          }
+        }
+        &.curSelectedNode {
+          background-color: #EDF7ED;
+          border: 0;
+          height: 36px;
+          color: #4CAF50;
+          span.button {
+            &.add {
+              opacity: 1;
+            }
+            &.edit {
+              opacity: 1;
+            }
+            &.remove {
+              opacity: 1;
+            }
+          }
+        }
+        .checkbox{
+          display: inline;
+        }
+      }
+      span {
+        &.button {
+          line-height: 0;
+          margin: 0;
+          width: 16px;
+          height: 16px;
+          display: inline-block;
+          vertical-align: middle;
+          border: 0 none;
+          cursor: pointer;
+          outline: none;
+          background-color: transparent;
+          background-repeat: no-repeat;
+          background-attachment: scroll;
+          background-image: url("../../assets/images/j_tree/mtree_icon.png");
+
+          &.switch {
+            width: 18px;
+            height: 18px;
+            padding: 5px 6px;
+          }
+
+          &.noline_open {
+            background-position: -92px -72px
+          }
+          &.noline_close {
+            background-position: -74px -72px
+          }
+          &.root_docu {
+            background: none;
+          }
+          &.roots_docu {
+            background-position: -56px 0
+          }
+          &.center_docu {
+            background-position: -56px -18px
+          }
+          &.bottom_docu {
+            background-position: -56px -36px
+          }
+          &.noline_docu {
+            background: none;
+          }
+          &.edit {
+            margin-right: 2px;
+            background-position: -110px -48px;
+            vertical-align: top;
+            *vertical-align: middle
+          }
+          &.remove {
+            margin-right: 2px;
+            background-position: -110px -64px;
+            vertical-align: top;
+            *vertical-align: middle
+          }
+          &.noline_open {
+            background-position: -26px -38px;
+          }
+          &.noline_close {
+            background-position: -24px -62px;
+          }
+          &.add {
+            margin-top: 6px;
+            position: absolute;
+            right: 45px;
+            background-color: #EDF7ED;
+            width: 22px;
+            height: 20px;
+            background-position: 5px -37px;
+            vertical-align: middle;
+            opacity: 0;
+          }
+          &.edit {
+            position: absolute;
+            margin-top: 6px;
+            right: 24px;
+            background-position: 7px -60px;
+            background-color: #EDF7ED;
+            width: 22px;
+            height: 20px;
+            vertical-align: middle;
+            opacity: 0;
+          }
+          &.remove {
+            position: absolute;
+            background-position: 7px -83px;
+            right: 0;
+            margin-top: 6px;
+            background-color: #EDF7ED;
+            width: 26px;
+            height: 20px;
+            vertical-align: middle;
+            opacity: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .loadSyncNode {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    display: inline-block;
+    background-image: url("data:image/gif;base64,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")
+  }
+}
