@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
 
     // Various Dev Server settings
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8091, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
@@ -20,7 +20,7 @@ module.exports = {
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
     proxyTable: {
       '/api': {
-        target: 'http://0.0.0.0:7777',
+        target: 'http://localhost:7777',
         changeOrigin: true
       }
     },
