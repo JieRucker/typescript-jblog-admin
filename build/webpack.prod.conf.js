@@ -104,7 +104,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunks: ['manifest', 'app'],
       chunksSortMode: 'dependency'
     }),
-    new HtmlWebpackPlugin({
+    /*new HtmlWebpackPlugin({
       title: '登录',
       iconfont: '//at.alicdn.com/t/font_458067_txd3eb7dw1giudi.css?v=' + new Date().getTime(),
       template: '!!ejs-loader!./src/template/login.ejs',
@@ -117,7 +117,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       },
       chunks: ['manifest', 'login'],
       chunksSortMode: 'dependency'
-    }),
+    }),*/
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // enable scope hoisting

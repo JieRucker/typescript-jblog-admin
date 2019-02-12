@@ -7,7 +7,7 @@
  */
 
 const build = {
-  static_url: '/', // 静态资源路径
+  static_url: 'http://static.admin.jrucker.cn/', // 静态资源路径
   common_url: 'http://api.jrucker.cn',
 };
 const build_dev = {
