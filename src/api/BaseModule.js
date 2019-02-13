@@ -21,7 +21,6 @@ class BaseModule {
     // request拦截器
     this.instance.interceptors.request.use(config => {
         // 每次发送请求，检查 vuex 中是否有token,如果有放在headers中
-      console.log(store.state.user);
         if (store.state.user.adminInfo.token) {
           config.headers.Authorization = `${store.state.user.adminInfo.token}`;
         }
