@@ -3,31 +3,13 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const proxyMiddleware = require('http-proxy-middleware');
-// const cors = require('./crossOrigin');
-//
-app.use(express.static(path.resolve(__dirname, '../dist')));
 
-/*app.use(cors({
-  origin: function (ctx) {
-    if (ctx.url === '/test') {
-      return false;
-    }
-    return '*';
-  },
-  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-  maxAge: 5,
-  credentials: true,
-  allowMethods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-}));*/
+app.use(express.static(path.resolve(__dirname, '../dist')));
 
 const proxyTable = {
   '/api': {
     target: 'http://api.jrucker.cn',
     changeOrigin: true
-    // pathRewrite: {
-    //   '^/api': '/api'
-    // }
   }
 };
 
