@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const app = express();
+const proxyMiddleware = require('http-proxy-middleware');
 // const cors = require('./crossOrigin');
 //
 app.use(express.static(path.resolve(__dirname, '../dist')));
@@ -19,6 +20,24 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
   allowMethods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }));*/
+
+const proxyTable = {
+  '/api': {
+    target: 'http://api.jrucker.cn',
+    changeOrigin: true
+    // pathRewrite: {
+    //   '^/api': '/api'
+    // }
+  }
+};
+
+Object.keys(proxyTable).forEach(function (context) {
+  let options = proxyTable[context];
+  if (typeof options === 'string') {
+    options = {target: options}
+  }
+  app.use(proxyMiddleware(options.filter || context, options))
+});
 
 app.get('*', function (req, res) {
   const html = fs.readFileSync(path.resolve(__dirname, '../dist/index.html'), 'utf-8');
