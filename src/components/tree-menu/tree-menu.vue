@@ -249,16 +249,16 @@
        * 新建根目录
        */
       setFolder() {
+        console.log(111)
         this.tree.foldName = '';
         this.$Modal.confirm({
           title: '新建目录',
           render: (h) => {
-            return h('Input', {
+            return h('i-input', {
               style: {
                 marginTop: '10px'
               },
               props: {
-                type:'text',
                 value: this.tree.foldName,
                 autofocus: true,
                 placeholder: '请输入目录名'
