@@ -249,12 +249,12 @@
        * 新建根目录
        */
       setFolder() {
-        console.log(111)
+        console.log(222)
         this.tree.foldName = '';
         this.$Modal.confirm({
           title: '新建目录',
           render: (h) => {
-            return h('i-input', {
+            return h('iInput', {
               style: {
                 marginTop: '10px'
               },
