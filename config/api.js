@@ -7,11 +7,11 @@
  */
 
 const build = {
-  static_url: 'http://admin.jrucker.cn/', // 静态资源路径
+  static_url: 'http://static-admin.jrucker.cn/', // 静态资源路径
   common_url: 'http://admin.jrucker.cn',
 };
 const build_dev = {
-  static_url: 'http://admin.jrucker.cn:8091/', // 静态资源路径
+  static_url: 'http://static-admin.jrucker.cn:8091/', // 静态资源路径
   common_url: 'http://admin.jrucker.cn:8091',
 };
 const dev = {
