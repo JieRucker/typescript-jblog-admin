@@ -258,12 +258,14 @@
                 marginTop: '10px'
               },
               props: {
+                type:'text',
                 value: this.tree.foldName,
                 autofocus: true,
                 placeholder: '请输入目录名'
               },
               on: {
                 input: val => {
+                  console.log(val)
                   this.tree.foldName = val;
                 }
               }
