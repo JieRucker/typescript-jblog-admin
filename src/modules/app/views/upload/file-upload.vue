@@ -38,9 +38,9 @@
         <div class="main__section clearfix">
           <div class="nav">
             <div class="nav__action">
-              <!--<Button type="default" style="margin-right: 5px" @click="trash({type:1,index:index})">
+              <Button type="default" style="margin-right: 5px">
                 批量删除
-              </Button>-->
+              </Button>
               <Upload
                 multiple
                 :before-upload="beforeUpload"
