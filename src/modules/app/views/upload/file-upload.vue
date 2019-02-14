@@ -279,14 +279,40 @@
         this.getUploadList();
       },
       handleUpload() {
-        if (!this.treeList.length) {
+
+        this.$Modal.confirm({
+          title: '新建目录',
+          render: (h) => {
+            return h('Input', {
+              style: {
+                marginTop: '10px'
+              },
+              props: {
+                value: '',
+                autofocus: true,
+                placeholder: '请输入目录名'
+              },
+              on: {
+                input: val => {
+
+                }
+              }
+            })
+          },
+          onOk: async () => {
+
+          }
+        })
+
+
+        /*if (!this.treeList.length) {
           return this.$Message.info('请先创建目录')
         }
 
         let _id = '';
         let selectId = this.$Global.VueDB().getItem('selectId', 'sessionStorage').toString();
         if (selectId) _id = selectId;
-        this.action = `${process.env.api.common_url}/api/upload/pic/${_id}`;
+        this.action = `${process.env.api.common_url}/api/upload/pic/${_id}`;*/
       },
       /**
        * 获取模型列表数据
