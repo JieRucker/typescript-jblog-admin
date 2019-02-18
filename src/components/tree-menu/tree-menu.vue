@@ -249,7 +249,6 @@
        * 新建根目录
        */
       setFolder() {
-        console.log(222)
         this.tree.foldName = '';
         this.$Modal.confirm({
           title: '新建目录',
@@ -265,7 +264,6 @@
               },
               on: {
                 input: val => {
-                  console.log(val)
                   this.tree.foldName = val;
                 }
               }
