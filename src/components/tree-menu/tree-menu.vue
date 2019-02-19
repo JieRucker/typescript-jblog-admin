@@ -253,15 +253,18 @@
         this.$Modal.confirm({
           title: '新建目录',
           render: (h) => {
-            return h('Input', {
+            return h('input', {
               style: {
                 marginTop: '10px'
               },
-              props: {
+              attrs:{
+                placeholder: '请输入目录名'
+              },
+              /*props: {
                 value: this.tree.foldName,
                 autofocus: true,
                 placeholder: '请输入目录名'
-              },
+              },*/
               on: {
                 'on-change': (event) => {
                   this.$Message.info(event);
