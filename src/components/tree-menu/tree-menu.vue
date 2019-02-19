@@ -253,7 +253,7 @@
         this.$Modal.confirm({
           title: '新建目录',
           render: (h) => {
-            return h('iInput', {
+            return h('Input', {
               style: {
                 marginTop: '10px'
               },
