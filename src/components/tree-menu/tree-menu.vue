@@ -263,8 +263,8 @@
                 placeholder: '请输入目录名'
               },
               on: {
-                input: val => {
-                  this.tree.foldName = val;
+                'on-blur': (event) => {
+                  this.tree.foldName = event.target.value
                 }
               }
             })
