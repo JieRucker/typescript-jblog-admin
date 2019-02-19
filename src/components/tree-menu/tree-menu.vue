@@ -255,20 +255,18 @@
           render: (h) => {
             return h('Input', {
               style: {
-                marginTop: '10px'
+                marginTop: '10px',
+                border: '1px solid #dddee1',
+                padding: '4px 7px',
+                'border-radius': '4px',
+                height: '32px',
+                width: '100%'
               },
-              attrs:{
+              attrs: {
                 placeholder: '请输入目录名'
               },
-              /*props: {
-                value: this.tree.foldName,
-                autofocus: true,
-                placeholder: '请输入目录名'
-              },*/
               on: {
                 input: (event) => {
-                  this.$Message.info('234');
-                  this.$Message.info(event.target.value);
                   this.tree.foldName = event.target.value
                 }
               }
