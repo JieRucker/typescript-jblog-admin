@@ -253,7 +253,7 @@
         this.$Modal.confirm({
           title: '新建目录',
           render: (h) => {
-            return h('input', {
+            return h('Input', {
               style: {
                 marginTop: '10px'
               },
@@ -266,9 +266,13 @@
                 placeholder: '请输入目录名'
               },*/
               on: {
-                'on-change': (event) => {
-                  this.$Message.info(event);
+                'on-input': (event) => {
+                  this.$Message.info('11',event);
                   this.tree.foldName = event.target.value
+                },
+                input: (event) => {
+                  this.$Message.info('22',event);
+                  // this.tree.foldName = event.target.value
                 }
               }
             })
