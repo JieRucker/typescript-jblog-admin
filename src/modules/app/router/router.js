@@ -32,21 +32,7 @@ export const otherRouter = {
       hideMenuItem: true,
       activeMenuItem: 'qrcode',
       crumb: [
-        {
-          path: '',
-          title: '解决方案管理',
-          name: 'manage',
-        },
-        {
-          path: '/manage/qrcode',
-          title: '产品管理',
-          name: 'qrcode',
-        },
-        {
-          path: '',
-          title: '产品详情',
-          name: 'qrcode-detail',
-        }
+
       ],
       component: () => import('../views/qrcode/qrcode-detail.vue')
     },*/
@@ -124,6 +110,17 @@ export const appRouter = [
         },
         component: () => import('../views/works/works-list.vue'),
       },
+      {
+        path: 'create-works',
+        title: '写作品',
+        name: 'create-works',
+        icon: 'android-funnel',
+        crumb: crumb.create_works,
+        meta: {
+          requiresAuth: true
+        },
+        component: () => import('../views/works/create-works.vue'),
+      }
     ]
   },
   {

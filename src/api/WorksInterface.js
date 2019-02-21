@@ -7,23 +7,28 @@ class WorksInterface extends BaseModule {
   }
 
   /*获取作品列表*/
-  getWorksList() {
-    return this.get(`${this.baseUrl}/api/work`);
+  getWorksList(data = {}) {
+    return this.get(`${this.baseUrl}/api/works?current_page=${data.current_page}&page_size=${data.page_size}&keyword=${data.keyword}&tag=${data.tag}&state=${data.state}`);
   }
 
   /*添加作品*/
   addWorks(data) {
-    return this.post(`${this.baseUrl}/api/work`, data);
+    return this.post(`${this.baseUrl}/api/works`, data);
   }
 
   /*修改作品*/
   alterWorks(data) {
-    return this.patch(`${this.baseUrl}/api/work/${data._id}`, data);
+    return this.patch(`${this.baseUrl}/api/works/${data._id}`, data);
   }
 
-  /*通过作品id来删除*/
+  /*通过作品id来获取作品*/
+  getWorksById(data) {
+    return this.get(`${this.baseUrl}/api/works/${data._id}`, data);
+  }
+
+  /*通过作品id来删除作品*/
   deleteWorksById(data) {
-    return this.delete(`${this.baseUrl}/api/work/${data._id}`);
+    return this.delete(`${this.baseUrl}/api/works/${data._id}`, data);
   }
 }
 

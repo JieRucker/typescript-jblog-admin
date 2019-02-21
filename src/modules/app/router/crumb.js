@@ -51,6 +51,18 @@ class Crumb {
     }]
   }
 
+  static get create_works() {
+    return [{
+      path: '',
+      title: '作品',
+      name: 'works',
+    }, {
+      path: '/works/create-works',
+      title: '写作品',
+      name: 'create-works',
+    }]
+  }
+
   static get file_upload() {
     return [{
       path: '',
