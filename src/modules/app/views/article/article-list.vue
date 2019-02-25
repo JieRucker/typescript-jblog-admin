@@ -126,7 +126,8 @@
                     },
                     on: {
                       click: () => {
-
+                        let prefix = 'https://www.jrucker.cn';
+                        window.open(`${prefix}/detail/${params.row._id}`, '_blank')
                       }
                     }
                   }, '查看'),
