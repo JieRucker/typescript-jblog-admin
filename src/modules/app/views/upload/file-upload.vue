@@ -286,7 +286,7 @@
         this.action = `${process.env.api.common_url}/api/upload/pic/${_id}`;
       },
       /**
-       * 获取模型列表数据
+       * 获取列表数据
        */
       async getUploadList() {
         this.table.body = [];
@@ -309,7 +309,7 @@
         this.getUploadList();
       },
       /**
-       * 删除模型
+       * 批量删除
        * @param param
        */
       trash(param) {
