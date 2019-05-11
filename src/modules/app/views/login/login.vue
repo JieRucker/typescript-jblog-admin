@@ -189,6 +189,7 @@
             admin_name: data.admin_name || '',
             token: data.token || ''
           });
+
           // let redirectUrl = decodeURIComponent(this.$route.query.redirect || '/article/article-list');
           //跳转到指定的路由
           this.$router.push({
