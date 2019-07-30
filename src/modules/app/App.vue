@@ -4,14 +4,24 @@
   </div>
 </template>
 
-<script>
-  export default {
+<script lang="ts">
+  import { Vue, Component, Prop } from "vue-property-decorator";
+
+  @Component({
+    name: 'App',
+  })
+  export default class App extends Vue {
+
+  }
+
+
+  /*export default {
     data() {
       return {
         theme: this.$store.state.app.themeColor
       };
     }
-  };
+  };*/
 </script>
 
 <style lang="scss">

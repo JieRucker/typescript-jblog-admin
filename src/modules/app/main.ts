@@ -4,7 +4,7 @@ import Vue from 'vue';
 import iView from 'iview';
 import {router} from './router';
 import store from './vuex';
-import App from './app.vue';
+import App from './App.vue';
 import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
 import wyboot from '@/libs/wyboot';
