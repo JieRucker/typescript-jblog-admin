@@ -5,15 +5,17 @@
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from "vue-property-decorator";
+  import {Vue, Component, Prop} from "vue-property-decorator";
+  import {State, Getter, Action, Mutation, namespace} from 'vuex-class';
+
+  const module = namespace('app');
 
   @Component({
-    name: 'App',
+    name: 'app',
   })
   export default class App extends Vue {
-
+    @module.State(state => state.themeColor) theme;
   }
-
 
   /*export default {
     data() {

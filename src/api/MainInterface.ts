@@ -1,13 +1,15 @@
 import BaseModule from "./BaseModule";
 
 class MainInterface extends BaseModule {
+
+  private baseUrl: string = process.env.api.common_url;
+
   constructor() {
     super();
-    this.baseUrl = process.env.api.common_url
   }
 
   // 登出
-  loginOut(data = {}) {
+  public loginOut(data: any) {
     return this.post(`${this.baseUrl}/loginOut`, data)
   }
 }

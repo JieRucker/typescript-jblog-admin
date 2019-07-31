@@ -1,28 +1,30 @@
 import BaseModule from "./BaseModule";
 
 class TagsInterface extends BaseModule {
+
+  private baseUrl: string = process.env.api.common_url;
+
   constructor() {
     super();
-    this.baseUrl = process.env.api.common_url
   }
 
   /*获取标签列表*/
-  getTagsList() {
+  public getTagsList() {
     return this.get(`${this.baseUrl}/api/tags`);
   }
 
   /*添加标签*/
-  addTags(data) {
+  public addTags(data: any) {
     return this.post(`${this.baseUrl}/api/tags`, data);
   }
 
   /*修改标签*/
-  alterTags(data) {
+  public alterTags(data: any) {
     return this.patch(`${this.baseUrl}/api/tags/${data._id}`, data);
   }
 
   /*通过标签id来删除*/
-  deleteTagsById(data) {
+  public deleteTagsById(data: any) {
     return this.delete(`${this.baseUrl}/api/tags/${data._id}`, data);
   }
 }

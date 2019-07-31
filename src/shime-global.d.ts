@@ -5,3 +5,13 @@ declare var document: Document;
 declare module "iview";
 declare module "vue-i18n";
 declare module "jsencrypt";
+declare module "query-string";
+
+declare const process: {
+  env: {
+    api: {
+      static_url: string;
+      common_url: string;
+    }
+  }
+};

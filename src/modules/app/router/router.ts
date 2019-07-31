@@ -1,3 +1,11 @@
+/**
+ * @Author: jrucker
+ * @Description
+ * @Date: 2019/7/31 下午9:58
+ * @Last Modified by: jrucker
+ * @Last Modified time: 2019/7/31 下午9:58
+ */
+
 import Main from '../views/Main.vue';
 import crumb from './crumb';
 
@@ -24,19 +32,7 @@ export const otherRouter = {
   name: 'otherRouter',
   redirect: '/login',
   component: Main,
-  children: [
-    /*{
-      path: 'qrcode-detail',
-      title: '产品详情',
-      name: 'qrcode-detail',
-      hideMenuItem: true,
-      activeMenuItem: 'qrcode',
-      crumb: [
-
-      ],
-      component: () => import('../views/qrcode/qrcode-detail.vue')
-    },*/
-  ]
+  children: []
 };
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里

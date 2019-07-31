@@ -4,25 +4,34 @@ import store from '@/modules/app/vuex';
 import {router} from '@/modules/app/router';
 
 class BaseModule {
-  constructor() {
-    this.instance = axios.create();
-    this.dataMethodDefaults = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      withCredentials: true,
-      transformRequest: [function (data) {
-        return qs.stringify(data)
-      }]
-    };
 
+  private instance = axios.create();
+
+  private dataMethodDefaults = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    withCredentials: true,
+    transformRequest: [function (data: any) {
+      return qs.stringify(data)
+    }]
+  };
+
+  constructor() {
+    this.init();
+  }
+
+  init() {
     axios.interceptors.request.use = this.instance.interceptors.request.use;
 
     // request拦截器
     this.instance.interceptors.request.use(config => {
         // 每次发送请求，检查 vuex 中是否有token,如果有放在headers中
-        if (store.state.user.adminInfo.token) {
-          config.headers.Authorization = `${store.state.user.adminInfo.token}`;
+
+        let token = window.sessionStorage.getItem('token');
+
+        if (token) {
+          config.headers.Authorization = token;
         }
 
         return config;
@@ -45,26 +54,25 @@ class BaseModule {
         }
       }
     )
-
   }
 
-  get(url, config = {}) {
+  get(url: string, config = {}) {
     return this.instance.get(url, config)
   }
 
-  post(url, data = undefined, config = {}) {
+  post(url: string, data = undefined, config = {}) {
     return this.instance.post(url, data, {...this.dataMethodDefaults, ...config})
   }
 
-  patch(url, data = undefined, config = {}) {
+  patch(url: string, data = undefined, config = {}) {
     return this.instance.patch(url, data, {...this.dataMethodDefaults, ...config})
   }
 
-  put(url, data = undefined, config = {}) {
+  put(url: string, data = undefined, config = {}) {
     return this.instance.put(url, data, {...this.dataMethodDefaults, ...config})
   }
 
-  delete(url, config = {}) {
+  delete(url: string, config = {}) {
     return this.instance.delete(url, config)
   }
 }
