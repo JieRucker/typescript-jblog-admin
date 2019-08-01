@@ -2,14 +2,12 @@
   // 编译选项
   "compilerOptions": {
     // 编译输出目标 ES 版本
-    "target": "esnext",
+    "target": "es5",
     // 采用的模块系统
     "module": "esnext",
     // 以严格模式解析
     "strict": true,
     "jsx": "preserve",
-    // 从 tslib 导入外部帮助库: 比如__extends，__rest等
-    "importHelpers": true,
     // 如何处理模块
     "moduleResolution": "node",
     // 启用装饰器
@@ -31,9 +29,7 @@
     "pretty": true,
     // 设置引入的定义文件
     "types": [
-      "node",
-      "jest",
-      "webpack-env"
+      "node"
     ],
     // 指定特殊模块的路径
     "paths": {
@@ -43,10 +39,11 @@
     },
     // 编译过程中需要引入的库文件的列表
     "lib": [
-      "esnext",
       "dom",
-      "dom.iterable",
-      "scripthost"
+      "es5",
+      "es6",
+      "es7",
+      "es2015.promise"
     ]
   },
   // ts 管理的文件

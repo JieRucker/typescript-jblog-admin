@@ -7,7 +7,7 @@ declare module "vue-i18n";
 declare module "jsencrypt";
 declare module "query-string";
 
-declare const process: {
+declare var process: {
   env: {
     api: {
       static_url: string;
@@ -15,3 +15,4 @@ declare const process: {
     }
   }
 };
+

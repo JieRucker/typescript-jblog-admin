@@ -60,19 +60,19 @@ class BaseModule {
     return this.instance.get(url, config)
   }
 
-  post(url: string, data = undefined, config = {}) {
-    return this.instance.post(url, data, {...this.dataMethodDefaults, ...config})
+  post(url: string, data: undefined, config?: object) {
+    return this.instance.post(url, data, Object.assign({}, this.dataMethodDefaults, config))
   }
 
-  patch(url: string, data = undefined, config = {}) {
-    return this.instance.patch(url, data, {...this.dataMethodDefaults, ...config})
+  patch(url: string, data: undefined, config?: object) {
+    return this.instance.patch(url, data, Object.assign({}, this.dataMethodDefaults, config))
   }
 
-  put(url: string, data = undefined, config = {}) {
-    return this.instance.put(url, data, {...this.dataMethodDefaults, ...config})
+  put(url: string, data: undefined, config?: object) {
+    return this.instance.put(url, data, Object.assign({}, this.dataMethodDefaults, config))
   }
 
-  delete(url: string, config = {}) {
+  delete(url: string, config?: object) {
     return this.instance.delete(url, config)
   }
 }

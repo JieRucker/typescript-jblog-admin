@@ -37,17 +37,17 @@ module.exports = {
         options: vueLoaderConfig
       },
       {
-        test: /\.js$/,
-        loader: 'happypack/loader?id=babel',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
-      },
-      {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/],
         }
+      },
+      {
+        test: /\.js$/,
+        loader: 'happypack/loader?id=babel',
+        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

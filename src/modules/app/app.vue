@@ -14,7 +14,7 @@
     name: 'app',
   })
   export default class App extends Vue {
-    @module.State(state => state.themeColor) theme;
+    // @module.State(state => state.themeColor) themeColor;
   }
 
   /*export default {
