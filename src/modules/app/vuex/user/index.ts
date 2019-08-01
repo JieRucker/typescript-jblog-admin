@@ -7,6 +7,7 @@
  */
 
 import * as types from '../mutation-types';
+import {GetterTree, ActionTree, MutationTree} from 'vuex';
 
 interface adminInfo {
   token: string;
@@ -28,15 +29,15 @@ const state: State = {
 };
 
 // getters
-const getters = {
+const getters: GetterTree<any, any> = {
   getAdminInfo: (state: State) => state.adminInfo,
 };
 
 // actions
-const actions = {};
+const actions: ActionTree<any, any> = {};
 
 // mutations
-const mutations = {
+const mutations: MutationTree<any> = {
   [types.SAVE_ADMIN_INFO](state: State, payload: adminInfo) {
     state.adminInfo.token = payload.token;
     state.adminInfo.admin_name = payload.admin_name;

@@ -8,6 +8,7 @@
 
 import {otherRouter, appRouter} from '../../router/router';
 import * as types from '../mutation-types';
+import {GetterTree, ActionTree, MutationTree} from 'vuex';
 
 interface State {
   isFullScreen: boolean;
@@ -36,13 +37,13 @@ const state: State = {
 };
 
 // getters
-const getters = {};
+const getters: GetterTree<any, any> = {};
 
 // actions
-const actions = {};
+const actions: ActionTree<any, any> = {};
 
 // mutations
-const mutations = {
+const mutations: MutationTree<any> = {
   [types.UPDATE_MENU_LIST](state: State, payload: null) {
     let menuList: object[] = [];
     appRouter.forEach((item, index) => {
