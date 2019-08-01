@@ -21,8 +21,7 @@ declare module "vue/types/vue" {
   interface Vue {
     $router: VueRouter; // 这表示this下有这个东西
     $route: Route;
-    $https: any;
-    $urls: any;
+    $api: any;
     $Message: any;
     $Modal: any;
   }

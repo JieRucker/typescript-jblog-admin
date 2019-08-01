@@ -8,6 +8,7 @@
 
 import * as types from '../mutation-types';
 import {GetterTree, ActionTree, MutationTree} from 'vuex';
+import {State} from "vuex-class";
 
 interface adminInfo {
   token: string;

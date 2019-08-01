@@ -8,22 +8,35 @@
   import {Vue, Component, Prop} from "vue-property-decorator";
   import {State, Getter, Action, Mutation, namespace} from 'vuex-class';
 
-  const module = namespace('app');
+  const Module = namespace('app/');
 
   @Component({
     name: 'app',
   })
   export default class App extends Vue {
-    // @module.State(state => state.themeColor) themeColor;
-  }
+    @Module.State('themeColor') private ModuleStateThemeColor!: string;
+    // @Module.Getter('oath') public ModuleGetterOath!: string;
+    // @Module.Action('addHobby') public ModuleActionAddHobby!: (hobby: string) => void;
+    // @Module.Mutation('ADD_HOBBY') public ModuleMutationAddHobby!: (hobby: string) => void;
 
-  /*export default {
-    data() {
-      return {
-        theme: this.$store.state.app.themeColor
-      };
+    mounted(): void {
+      this.init()
     }
-  };*/
+
+    public init(): void {
+      // state
+      // console.log('themeColor', this.ModuleStateThemeColor);
+
+      // 使用getter
+      // console.log(this.ModuleAGetterOath);
+
+      // 使用dispath
+      // this.ModuleActionAddHobby('123');
+
+      // 使用commit
+      // this.ModuleMutationAddHobby('456');
+    }
+  }
 </script>
 
 <style lang="scss">

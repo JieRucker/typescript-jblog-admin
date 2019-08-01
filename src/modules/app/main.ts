@@ -27,6 +27,6 @@ new Vue({
   render: h => h(App),
   mounted() {
     // 菜单过滤
-    this.$store.commit('updateMenulist');
+    this.$store.commit('app/UPDATE_MENU_LIST');
   }
 });
