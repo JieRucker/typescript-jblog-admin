@@ -90,189 +90,123 @@
   </div>
 </template>
 
-<script>
-  import THREE from "@/libs/three/three";
-  // import Cookies from 'js-cookie';
-  // import MD5 from '@/libs/md5/md5.js';
+<script lang="ts">
+  import {Vue, Component} from 'vue-property-decorator';
 
-  export default {
-    name: 'register',
-    data() {
-      let passReg = new RegExp(/^(?![0-9]+$)(?![a-zA-Z!@#$%^&*()_+~,.|{}?><\-\]\\[\/]+$)[0-9A-Za-z!@#$%^&*()_+~,.|{}?><\-\]\\[\/]{8,16}$/);
+  let passReg = new RegExp(/^(?![0-9]+$)(?![a-zA-Z!@#$%^&*()_+~,.|{}?><\-\]\\[\/]+$)[0-9A-Za-z!@#$%^&*()_+~,.|{}?><\-\]\\[\/]{8,16}$/);
 
-      const validatePass = (rule, value, callback) => {
-        if (this.$Global.isBlank(value)) {
-          callback(new Error('请输入密码'));
-        } else if (!passReg.test(value)) {
-          callback(new Error('必须包含英文、数字且8-16位'));
-        } else {
-          if (!this.$Global.isBlank(this.form.passwdCheck)) {
-            // 对第二个密码框单独验证
-            this.$refs.registerForm.validateField('passwdCheck');
-          }
-          callback();
-        }
-      };
-      const validatePassCheck = (rule, value, callback) => {
-        if (this.$Global.isBlank(value)) {
-          callback(new Error('请再一次输入密码'));
-        } else if (value.length < 8) {
-          callback(new Error('密码需要8-16位'));
-        } else if (value !== this.form.passwd) {
-          callback(new Error('两次密码输入不一致'));
-        } else {
-          callback();
-        }
-      };
-
-      return {
-        form: {
-          phoneNum: '',
-          passwd: '',
-          passwdCheck: ''
-        },
-        rules: {
-          phoneNum: [
-            {required: true, message: '用户名不能为空', trigger: 'blur'}
-          ],
-          passwd: [
-            {validator: validatePass, trigger: 'blur'}
-          ],
-          passwdCheck: [
-            {validator: validatePassCheck, trigger: 'blur'}
-          ]
-        }
-      };
-    },
-    computed: {
-      loginStyle() {
-        return {
-          backgroundImage: `url(static/images/login/login-bg.jpg)`,
-          // backgroundImage: `url(${process.env.api.staticUrl}static/images/login/login_bg.jpg)`,
-          // backgroundImage: `url(static/images/login/bg.png)`,
-        }
+  function validatePass(rule: any, value: any, callback: any) {
+    if (this.$Global.isBlank(value)) {
+      callback(new Error('请输入密码'));
+    } else if (!passReg.test(value)) {
+      callback(new Error('必须包含英文、数字且8-16位'));
+    } else {
+      if (!this.$Global.isBlank(this.form.passwdCheck)) {
+        // 对第二个密码框单独验证
+        this.$refs.registerForm.validateField('passwdCheck');
       }
-    },
-    mounted() {
-      // this.liziInit()
-    },
-    methods: {
-      handleSubmit() {
-        this.$refs.registerForm.validate(async valid => {
-          if (valid) {
-            let params = {
-              admin_name: this.form.phoneNum,
-              admin_id: this.form.phoneNum,
-              admin_pwd: this.form.passwdCheck,
-            };
-
-            let res = await this.$api.loginInterface.register(params);
-            let {code, data, msg} = res.data;
-            if (code === 200) {
-              this.$Message.info('注册成功！');
-              this.$router.push({
-                name: 'login'
-              });
-              return false;
-            }
-
-            this.$Message.info(msg);
-          }
-        });
-      },
-      handleLogin() {
-        this.$router.push({
-          name: 'login'
-        });
-      },
-      liziInit() {
-        var SCREEN_WIDTH = window.innerWidth;
-        var SCREEN_HEIGHT = window.innerHeight;
-        var SEPARATION = 90;
-        var AMOUNTX = 50;
-        var AMOUNTY = 50;
-        var container;
-        var particles, particle;
-        var count;
-        var camera;
-        var scene;
-        var renderer;
-        var mouseX = 0;
-        var mouseY = 0;
-        var windowHalfX = window.innerWidth / 2;
-        var windowHalfY = window.innerHeight / 2;
-        init();
-        this.interval = setInterval(loop, 1000 / 40);
-
-        function init() {
-          container = document.createElement("div");
-          container.style.position = "relative";
-          container.style.top = "200px";
-          document.getElementById("indexLizi").appendChild(container);
-          camera = new THREE.Camera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
-          camera.position.z = 1000;
-          scene = new THREE.Scene();
-          renderer = new THREE.CanvasRenderer();
-          renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-          particles = new Array();
-          var i = 0;
-          var material = new THREE.ParticleCircleMaterial(0x097bdb, 1);
-          for (var ix = 0; ix < AMOUNTX; ix++) {
-            for (var iy = 0; iy < AMOUNTY; iy++) {
-              particle = particles[i++] = new THREE.Particle(material);
-              particle.position.x = ix * SEPARATION - AMOUNTX * SEPARATION / 2;
-              particle.position.z = iy * SEPARATION - AMOUNTY * SEPARATION / 2;
-              scene.add(particle);
-            }
-          }
-          count = 0;
-          container.appendChild(renderer.domElement);
-          document.addEventListener("mousemove", onDocumentMouseMove, false);
-          document.addEventListener("touchmove", onDocumentTouchMove, false);
-        }
-
-        var mousemovetimer = null;
-
-        function onMouseMove(event) {
-          window.clearTimeout(mousemovetimer);
-          mouseX = event.clientX - windowHalfX;
-          mouseY = event.clientY - windowHalfY;
-          mousemovetimer = null;
-        }
-
-        function onDocumentMouseMove(event) {
-          if (!mousemovetimer)
-            mousemovetimer = window.setTimeout(onMouseMove, 50, event);
-        }
-
-        function onDocumentTouchMove(event) {
-          if (event.touches.length == 1) {
-            event.preventDefault();
-            mouseX = event.touches[0].pageX - windowHalfX;
-            mouseY = event.touches[0].pageY - windowHalfY;
-          }
-        }
-
-        function loop() {
-          camera.position.x += (mouseX - camera.position.x) * 0.05;
-          // camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
-          camera.position.y = 364;
-          var i = 0;
-          for (var ix = 0; ix < AMOUNTX; ix++) {
-            for (var iy = 0; iy < AMOUNTY; iy++) {
-              particle = particles[i++];
-              particle.position.y =
-                Math.sin((ix + count) * 0.3) * 50 +
-                Math.sin((iy + count) * 0.5) * 50;
-              particle.scale.x = particle.scale.y =
-                (Math.sin((ix + count) * 0.3) + 1) * 2 +
-                (Math.sin((iy + count) * 0.5) + 1) * 2;
-            }
-          }
-          renderer.render(scene, camera);
-          count += 0.1;
-        }
-      },
+      callback();
     }
-  };
+  }
+
+  function validatePassCheck(rule: any, value: any, callback: any) {
+    if (this.$Global.isBlank(value)) {
+      callback(new Error('请再一次输入密码'));
+    } else if (value.length < 8) {
+      callback(new Error('密码需要8-16位'));
+    } else if (value !== this.form.passwd) {
+      callback(new Error('两次密码输入不一致'));
+    } else {
+      callback();
+    }
+  }
+
+  interface Form {
+    phoneNum: string;
+    passwd: string;
+    passwdCheck: string;
+  }
+
+  interface RulePhoneNum {
+    required: boolean;
+    message: string;
+    trigger: string;
+  }
+
+  interface RulePasswd {
+    validator: any;
+    trigger: string;
+  }
+
+  interface RulePasswdCheck {
+    validator: any;
+    trigger: string;
+  }
+
+  interface Rules {
+    phoneNum: RulePhoneNum[];
+    passwd: RulePasswd[];
+    passwdCheck: RulePasswdCheck[]
+  }
+
+  @Component({
+    name: 'register'
+  })
+  export default class Register extends Vue {
+    form: Form = {
+      phoneNum: '',
+      passwd: '',
+      passwdCheck: ''
+    };
+
+    rules: Rules = {
+      phoneNum: [
+        {required: true, message: '用户名不能为空', trigger: 'blur'}
+      ],
+      passwd: [
+        {validator: validatePass, trigger: 'blur'}
+      ],
+      passwdCheck: [
+        {validator: validatePassCheck, trigger: 'blur'}
+      ]
+    };
+
+    get loginStyle() {
+      return {
+        backgroundImage: `url(${process.env.api.static_url}static/images/login/login-bg.jpg)`,
+      }
+    }
+
+    handleSubmit() {
+      (this.$refs.registerForm as any).validate(async (valid: boolean) => {
+        if (valid) {
+          let params = {
+            admin_name: this.form.phoneNum,
+            admin_id: this.form.phoneNum,
+            admin_pwd: this.form.passwdCheck,
+          };
+
+          let res = await this.$api.loginInterface.register(params);
+          let {code, data, msg} = res.data;
+          if (code === 200) {
+            this.$Message.info('注册成功！');
+            this.$router.push({
+              name: 'login'
+            });
+            return false;
+          }
+
+          this.$Message.info(msg);
+        }
+      });
+    }
+
+    handleLogin() {
+      this.$router.push({
+        name: 'login'
+      });
+    }
+  }
+
+
 </script>

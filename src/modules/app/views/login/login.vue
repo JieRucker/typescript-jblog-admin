@@ -103,16 +103,47 @@
   import JSEncrypt from 'jsencrypt';
   import THREE from "@/libs/three/three";
 
+  interface Form {
+    phoneNum: string;
+    password: string;
+    code: string;
+  }
+
+  interface RulePhoneNum {
+    required: boolean;
+    message: string;
+    trigger: string;
+  }
+
+  interface RulePassword {
+    required: boolean;
+    message: string;
+    trigger: string;
+  }
+
+  interface RuleCode {
+    required: boolean;
+    message: string;
+    trigger: string;
+  }
+
+  interface Rules {
+    phoneNum: RulePhoneNum[];
+    password: RulePassword[];
+    code: RuleCode[]
+  }
+
   @Component({
     name: 'login'
   })
   export default class Login extends Vue {
-    form: any = {
+    form: Form = {
       phoneNum: '',
       password: '',
       code: ''
     };
-    rules: object = {
+
+    rules: Rules = {
       phoneNum: [
         {required: true, message: '用户名不能为空', trigger: 'blur'}
       ],
@@ -148,7 +179,7 @@
     }
 
     handleSubmit() {
-      (this.$refs.loginForm as any).validate(async (valid: any) => {
+      (this.$refs.loginForm as any).validate(async (valid: boolean) => {
         if (valid) {
           let res = await this.$api.loginInterface.getPublicKey();
           let {code, data} = res.data;
