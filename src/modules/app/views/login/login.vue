@@ -107,7 +107,6 @@
     name: 'login'
   })
   export default class Login extends Vue {
-
     form: any = {
       phoneNum: '',
       password: '',
@@ -204,12 +203,6 @@
       this.$router.push({
         name: 'register'
       });
-    }
-
-    handleResetPassword() {
-      this.$router.push({
-        name: 'resetPassword'
-      })
     }
 
     liziInit() {
