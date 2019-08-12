@@ -22,8 +22,8 @@ Vue.prototype.$jDynamic = jDynamic;
 
 new Vue({
   el: '#app',
-  router: router,
-  store: store,
+  router,
+  store,
   render: h => h(App),
   mounted() {
     // 菜单过滤
