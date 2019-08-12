@@ -171,7 +171,7 @@
       ]
     };
 
-    get loginStyle() {
+    get loginStyle(): object {
       return {
         backgroundImage: `url(${process.env.api.static_url}static/images/login/login-bg.jpg)`,
       }

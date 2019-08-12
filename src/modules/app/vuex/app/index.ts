@@ -46,12 +46,16 @@ const actions: ActionTree<any, any> = {};
 // mutations
 const mutations: MutationTree<any> = {
   [types.UPDATE_MENU_LIST](state: State, payload: null) {
-    let menuList: object[] = [];
-    appRouter.forEach((item, index) => {
+    let menuList: any[] = [];
+    appRouter.forEach((item: any) => {
       let len = menuList.push(item);
       if (!item.children) return;
-      let childrenArr = item.children.filter(child => child);
-      if (childrenArr === undefined || childrenArr.length === 0) {
+
+      let childrenArr = item.children.filter((child: any) => {
+        return child
+      });
+
+      if (!childrenArr.length) {
         menuList.splice(len - 1, 1);
       } else {
         let handledItem = JSON.parse(JSON.stringify(menuList[len - 1]));

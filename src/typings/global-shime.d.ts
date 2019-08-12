@@ -6,6 +6,7 @@ declare module "iview";
 declare module "vue-i18n";
 declare module "jsencrypt";
 declare module "query-string";
+declare module "mavon-editor";
 
 declare var process: {
   env: {
