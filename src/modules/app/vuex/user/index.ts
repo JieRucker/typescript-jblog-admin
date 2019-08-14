@@ -30,7 +30,7 @@ const state: State = {
 };
 
 // getters
-const getters: GetterTree<any, any> = {
+const getters: GetterTree<State, any> = {
   getAdminInfo: (state: State) => state.adminInfo,
 };
 
@@ -38,7 +38,7 @@ const getters: GetterTree<any, any> = {
 const actions: ActionTree<any, any> = {};
 
 // mutations
-const mutations: MutationTree<any> = {
+const mutations: MutationTree<State> = {
   [types.SAVE_ADMIN_INFO](state: State, payload: adminInfo) {
     state.adminInfo.token = payload.token;
     state.adminInfo.admin_name = payload.admin_name;

@@ -33,55 +33,60 @@
   </Modal>
 </template>
 
-<script>
-  export default {
-    name: "m-tags-mdl",
-    data() {
-      return {
-        show: true,
-        modalType: 0,
-        modalTitle: '新建标签',
-        tags: {
-          _id: '',
-          name: '',
-          desc: ''
-        }
-      }
-    },
-    methods: {
-      /**
-       * 关闭弹窗
-       * @param value
-       */
-      onVisible(value) {
-        value || this.$jDynamic.hide({component: 'mTagsMdl'})
-      },
-      async save() {
-        let res;
-        switch (this.modalType) {
-          case 0:
-            res = await this.$api.tagsInterface.addTags({
-              tags_name: this.tags.name,
-              tags_desc: this.tags.desc
-            });
-            break;
-          case 1:
-            res = await this.$api.tagsInterface.alterTags({
-              _id: this.tags._id,
-              tags_name: this.tags.name,
-              tags_desc: this.tags.desc
-            });
-            break;
-        }
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
 
-        let {code, msg} = res.data;
-        if (code === 200) {
-          (typeof this.confirmfunc === "function") && (this.confirmfunc.call(null, true));
-          this.onVisible(false);
-        }
+  interface Tags {
+    _id: string;
+    name: string;
+    desc: string;
+  }
 
-        this.$Message.info(msg)
+  @Component({
+    name: 'm-tags-mdl'
+  })
+  export default class MTagsMdl extends Vue {
+
+    show: boolean = true;
+    modalType: number = 0;
+    modalTitle: string = '新建标签';
+    tags: Tags = {
+      _id: '',
+      name: '',
+      desc: ''
+    };
+
+    confirmfunc: () => void;
+
+    async save() {
+      let res;
+      switch (this.modalType) {
+        case 0:
+          res = await this.$api.tagsInterface.addTags({
+            tags_name: this.tags.name,
+            tags_desc: this.tags.desc
+          });
+          break;
+        case 1:
+          res = await this.$api.tagsInterface.alterTags({
+            _id: this.tags._id,
+            tags_name: this.tags.name,
+            tags_desc: this.tags.desc
+          });
+          break;
       }
+
+      let {code, msg} = res.data;
+      if (code === 200) {
+        (typeof (this.confirmfunc) === "function") && (this.confirmfunc.call(null, true));
+        this.onVisible(false);
+      }
+
+      this.$Message.info(msg)
+    }
+
+    onVisible(value: boolean) {
+      value || this.$jDynamic.hide({component: 'mTagsMdl'})
     }
   }
 </script>

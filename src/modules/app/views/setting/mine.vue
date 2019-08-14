@@ -30,40 +30,55 @@
   </Card>
 </template>
 
-<script>
-  export default {
-    name: "mine",
-    data() {
-      return {
-        person_info: {
-          avatar: '', /*头像*/
-          cover: '', /*封面*/
-          description: '', /*描述*/
-          github: '',
-          twitter: '',
-          juejin: '',
-        }
-      }
-    },
-    mounted() {
-      this.init()
-    },
-    methods: {
-      async init() {
-        let res = await this.$api.settingInterface.getSetting();
-        let {code, msg, data = {}} = res.data;
-        let info = data.info;
-        let person_info = info.person_info;
-        if (person_info) this.person_info = person_info
-      },
-      async save() {
-        let params = {
-          person_info: JSON.stringify(this.person_info)
-        };
-        let res = await this.$api.settingInterface.alterSetting(params);
-        let {code, msg, data = []} = res.data;
-        return this.$Message.info(msg)
-      }
+<script lang="ts">
+  import {Vue, Component, Prop} from "vue-property-decorator";
+
+  interface PersonInfo {
+    avatar: string,
+    /*头像*/
+    cover: string,
+    /*封面*/
+    description: string,
+    /*描述*/
+    github: string,
+    twitter: string,
+    juejin: string,
+  }
+
+  @Component({
+    name: 'mine'
+  })
+  export default class Mine extends Vue {
+
+    person_info: PersonInfo = {
+      avatar: '',
+      cover: '',
+      description: '',
+      github: '',
+      twitter: '',
+      juejin: '',
+    };
+
+    async created() {
+      await this.onLoad()
     }
+
+    async onLoad() {
+      let res = await this.$api.settingInterface.getSetting();
+      let {code, msg, data = {}} = res.data;
+      let info = data.info;
+      let person_info = info.person_info;
+      if (person_info) this.person_info = person_info
+    }
+
+    async save() {
+      let params = {
+        person_info: JSON.stringify(this.person_info)
+      };
+      let res = await this.$api.settingInterface.alterSetting(params);
+      let {code, msg, data = []} = res.data;
+      return this.$Message.info(msg)
+    }
+
   }
 </script>

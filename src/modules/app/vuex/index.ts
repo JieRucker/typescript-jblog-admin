@@ -7,14 +7,14 @@
  */
 
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, {Store} from 'vuex';
 
 import app from './app';
 import user from './user';
 
 Vue.use(Vuex);
 
-const store = new Vuex.Store({
+const store: Store<any> = new Vuex.Store({
   modules: {
     app,
     user,

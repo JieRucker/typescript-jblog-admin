@@ -59,168 +59,181 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+  import {Vue, Component, Prop} from "vue-property-decorator";
   import {mavonEditor} from 'mavon-editor';
   import 'mavon-editor/dist/css/index.css';
 
-  export default {
-    name: "create-works",
+  interface Works {
+    title: string;
+    tags: Array<any>;
+    state: number;
+    cover: string;
+    desc: string;
+    tag_clear: boolean;
+    create_time: string;
+    update_time: string;
+    content: string;
+  }
+
+  @Component({
+    name: 'create-works',
     components: {
       mavonEditor
     },
-    data() {
-      return {
-        works: {
-          title: '', /*标题*/
-          tags: [], /*标签*/
-          state: 1, /*状态*/
-          cover: '', /*封面地址*/
-          desc: '', /*文章描述*/
-          tag_clear: true,
-          create_time: '',
-          update_time: '',
-          content: ''
-        },
-        tagList: [],
-        stateOptions: [
-          {
-            name: '发布',
-            value: 1
-          },
-          {
-            name: '草稿',
-            value: 0
-          }
-        ]
+  })
+  export default class CreateWorks extends Vue {
+    works: Works = {
+      title: '', /*标题*/
+      tags: [], /*标签*/
+      state: 1, /*状态*/
+      cover: '', /*封面地址*/
+      desc: '', /*文章描述*/
+      tag_clear: true,
+      create_time: '',
+      update_time: '',
+      content: ''
+    };
+
+    tagList: Array<any> = [];
+
+    stateOptions: Array<object> = [
+      {
+        name: '发布',
+        value: 1
+      },
+      {
+        name: '草稿',
+        value: 0
       }
-    },
-    /*directives: {
-      markdown: {
-        inserted(el) {
-          simplemde = new SimpleMDE({
-            element: el
-          });
+    ];
+
+    async mounted() {
+      await this.getTagList();
+      if ((this.$route.query as any)._id) await this.getWorksById();
+    }
+
+    getNavigation() {
+      let navigationContent;
+      let navigation_list: any[] = [];
+      let mavonEditor = this.$refs.mavonEditor;
+      navigationContent = (mavonEditor as any).$refs.navigationContent;
+      navigationContent.innerHTML = (mavonEditor as any).d_render;
+
+      let nodes = navigationContent.children;
+      if (nodes.length) {
+        for (let i = 0; i < nodes.length; i++) {
+          judageH(nodes[i])
         }
       }
-    },*/
-    mounted() {
-      this.getTagList();
-      if (this.$route.query._id) this.getWorksById();
-    },
-    methods: {
-      getNavigation() {
-        let navigationContent;
-        let navigation_list = [];
-        let mavonEditor = this.$refs.mavonEditor;
-        navigationContent = mavonEditor.$refs.navigationContent;
-        navigationContent.innerHTML = mavonEditor.d_render;
 
-        let nodes = navigationContent.children;
-        if (nodes.length) {
-          for (let i = 0; i < nodes.length; i++) {
-            judageH(nodes[i], i, nodes)
-          }
+      function judageH(node: any) {
+        let reg = /^H[1-6]{1}$/;
+        if (reg.exec(node.tagName)) {
+          navigation_list.push({
+            name: node.innerText,
+            id: node.childNodes[0].getAttribute('id')
+          })
         }
+      }
 
-        function judageH(node, i, nodes) {
-          let reg = /^H[1-6]{1}$/;
-          if (reg.exec(node.tagName)) {
-            navigation_list.push({
-              name: node.innerText,
-              id: node.childNodes[0].getAttribute('id')
-            })
-          }
+      return navigation_list
+    }
+
+    getFile(e: any) {
+      let self = this;
+      let obj = e.target || null;
+      let fileName = obj.files[0].name;
+      let fileReader = new FileReader();
+      if (fileName.slice(fileName.lastIndexOf(".") + 1).toLowerCase() !== 'md') {
+        return this.$Message.info('请上传markdown的文件');
+      }
+      fileReader.readAsText(obj.files[0]);
+      fileReader.onload = function () {
+        let result = this.result;
+        try {
+          self.works.content = result;
+        } catch (e) {
+          console.error("Storage failed: " + e);
         }
-
-        return navigation_list
-      },
-      getFile(e) {
-        let self = this;
-        let obj = e.target || null;
-        let fileName = obj.files[0].name;
-        let fileReader = new FileReader();
-        if (fileName.slice(fileName.lastIndexOf(".") + 1).toLowerCase() !== 'md') {
-          return this.$Message.info('请上传markdown的文件');
-        }
-        fileReader.readAsText(obj.files[0]);
-        fileReader.onload = function () {
-          let result = this.result;
-          try {
-            self.works.content = result;
-          } catch (e) {
-            console.error("Storage failed: " + e);
-          }
-        }
-      },
-      /*发表*/
-      async publishHandler() {
-        let res;
-        let params = {};
-        this.works.tags = !this.works.tag_clear ? this.tagList.map(m => m.checked ? m._id : null).filter(item => item) : [];
-        params = {
-          _id: this.$route.query._id ? this.$route.query._id : '',
-          works_content: this.works.content,
-          // works_render_content: this.$refs.mavonEditor.d_render.replace(/[\r\n]/g, ""),
-          works_render_content: this.$refs.mavonEditor.d_render,
-          works_cover: this.works.cover,
-          // works_create_time: this.works.create_time,
-          works_desc: this.works.desc,
-          works_state: this.works.state,
-          works_tags: this.works.tags,
-          works_title: this.works.title,
-          works_navigation: JSON.stringify(this.getNavigation())
-          // works_update_time: this.works.update_time
-        };
-
-        res = !this.$route.query._id ? await this.$api.worksInterface.addWorks(params) : await this.$api.worksInterface.alterWorks(params);
-        let {code, msg, data = []} = res.data;
-        return this.$Message.info(msg)
-      },
-      async getWorksById() {
-        let res = await this.$api.worksInterface.getWorksById({_id: this.$route.query._id});
-        let {code, data} = res.data;
-        if (code === 200 && data.length) {
-          let [a] = data;
-          this.works.title = a.works_title;
-          this.works.state = a.works_state;
-          this.works.cover = a.works_cover;
-          this.works.desc = a.works_desc;
-          this.works.create_time = a.works_create_time;
-          this.works.update_time = a.works_update_time;
-          this.works.content = a.works_content;
-          if (a.works_tags.length) {
-            this.works.tag_clear = false;
-            this.tagList.map(item => {
-              a.works_tags.map(m => (item._id === m._id) && (item.checked = true))
-            })
-          }
-        }
-      },
-      async getTagList() {
-        let res = await this.$api.tagsInterface.getTagsList();
-        let {works_num_list = [], tags_list = []} = res.data.data;
-        tags_list.forEach(item => {
-          item.checked = false;
-          let temp = works_num_list.find(i => {
-            return i._id === item._id;
-          });
-          item.tags_works_num = temp == null ? 0 : temp.count;
-        });
-
-        this.tagList = tags_list.sort((a, b) => {
-          return a.tags_works_num < b.tags_works_num;
-        });
-
-        this.tagList = tags_list;
-      },
-      onChangeTagsClear() {
-        this.works.tag_clear = !this.works.tag_clear;
-        this.tagList.map(m => m.checked = false)
-      },
-      onChangeTags(index) {
-        this.works.tag_clear = false;
-        this.tagList[index].checked = !this.tagList[index].checked;
       }
     }
+
+    /*发表*/
+    async publishHandler() {
+      let res;
+      let params = {};
+      this.works.tags = !this.works.tag_clear ? this.tagList.map(m => m.checked ? m._id : null).filter(item => item) : [];
+      let _id = (this.$route.query as any)._id;
+      params = {
+        _id: _id || '',
+        works_content: this.works.content,
+        // works_render_content: this.$refs.mavonEditor.d_render.replace(/[\r\n]/g, ""),
+        works_render_content: (this.$refs.mavonEditor as any).d_render,
+        works_cover: this.works.cover,
+        // works_create_time: this.works.create_time,
+        works_desc: this.works.desc,
+        works_state: this.works.state,
+        works_tags: this.works.tags,
+        works_title: this.works.title,
+        works_navigation: JSON.stringify(this.getNavigation())
+        // works_update_time: this.works.update_time
+      };
+
+      res = !_id ? await this.$api.worksInterface.addWorks(params) : await this.$api.worksInterface.alterWorks(params);
+      let {code, msg, data = []} = res.data;
+      return this.$Message.info(msg)
+    }
+
+    async getWorksById() {
+      let _id = (this.$route.query as any)._id;
+      let res = await this.$api.worksInterface.getWorksById({_id});
+      let {code, data} = res.data;
+      if (code === 200 && data.length) {
+        let [a] = data;
+        this.works.title = a.works_title;
+        this.works.state = a.works_state;
+        this.works.cover = a.works_cover;
+        this.works.desc = a.works_desc;
+        this.works.create_time = a.works_create_time;
+        this.works.update_time = a.works_update_time;
+        this.works.content = a.works_content;
+        if (a.works_tags.length) {
+          this.works.tag_clear = false;
+          this.tagList.map((item: any) => {
+            a.works_tags.map((m: any) => (item._id === m._id) && (item.checked = true))
+          })
+        }
+      }
+    }
+
+    async getTagList() {
+      let res = await this.$api.tagsInterface.getTagsList();
+      let {works_num_list = [], tags_list = []} = res.data.data;
+      tags_list.forEach((item: any) => {
+        item.checked = false;
+        let temp = works_num_list.find((i: any) => {
+          return i._id === item._id;
+        });
+        item.tags_works_num = temp == null ? 0 : temp.count;
+      });
+
+      this.tagList = tags_list.sort((a: any, b: any) => {
+        return a.tags_works_num < b.tags_works_num;
+      });
+
+      this.tagList = tags_list;
+    }
+
+    onChangeTagsClear() {
+      this.works.tag_clear = !this.works.tag_clear;
+      this.tagList.map((m: any) => m.checked = false)
+    }
+
+    onChangeTags(index: number) {
+      this.works.tag_clear = false;
+      this.tagList[index].checked = !this.tagList[index].checked;
+    }
   }
+
 </script>

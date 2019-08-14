@@ -23,9 +23,9 @@
     <Table :columns="columns" :data="list"></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="table.args.total_count"
-              :current="table.args.current_page"
-              :page-size="table.args.page_size"
+        <Page :total="total_count"
+              :current="current_page"
+              :page-size="page_size"
               show-total @on-change="changePage"></Page>
       </div>
     </div>
@@ -185,7 +185,7 @@
                     onOk: async () => {
                       let res = await this.$api.articleInterface.deleteArticleById({_id: params.row._id});
                       let {msg} = res.data;
-                      this.getArticleList();
+                      await this.getArticleList();
                       return this.$Message.info(msg)
                     }
                   });
@@ -198,10 +198,10 @@
     ];
 
     async created(): Promise<void> {
-      await this.init()
+      await this.onLoad()
     }
 
-    async init() {
+    async onLoad() {
       let res = await this.$api.tagsInterface.getTagsList();
       let {article_num_list = [], tags_list = []} = res.data.data;
       tags_list.forEach((item: any) => {

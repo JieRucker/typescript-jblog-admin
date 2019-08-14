@@ -51,7 +51,7 @@
             </div>
           </div>
           <div class="table">
-            <Table ref="fileTable" :columns="table.header" :data="table.body"></Table>
+            <Table ref="fileTable" :columns="columns" :data="list"></Table>
             <div style="margin: 10px;overflow: hidden">
               <div style="float: right;">
                 <Page :total="table.args.total_count"
@@ -68,7 +68,297 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
+  import {State, Getter, Action, Mutation, namespace} from 'vuex-class';
+  import treeMenu from '@/components/tree-menu/tree-menu.vue';
+  import mMoveMdl from '@/components/j-modal/move/m-move-mdl.vue';
+
+  const Module = namespace('user/');
+
+  interface AdminInfo {
+    token: string
+  }
+
+  @Component({
+    name: 'file-upload',
+    components: {
+      treeMenu
+    }
+  })
+  export default class FileUpload extends Vue {
+    @Module.Getter('getAdminInfo') public AdminInfo!: AdminInfo;
+
+    $refs!: {
+      fileTable: HTMLDivElement;
+    };
+
+    headers: any = {};
+    action: string = '';
+
+    list: Array<any> = [];
+    /*目录*/
+    treeList: Array<any> = [];
+    imageList: Array<any> = [];
+
+    current_page: number = 1;
+    page_size: number = 10;
+    total_count: number = 0;
+
+    columns = [
+      {
+        type: 'selection',
+        width: 60,
+        align: 'center'
+      },
+      {
+        title: '文件名',
+        key: 'image_origin_name'
+      },
+      {
+        title: '创建时间',
+        key: 'create_date'
+      },
+      {
+        title: '大小',
+        key: 'image_size',
+        render: (h: any, params: any) => {
+          return h('span', {}, `${(params.row.image_size / 1024).toFixed(3)}kb`)
+        }
+      },
+      {
+        title: '图片',
+        width: 100,
+        key: 'image_url',
+        render: (h: any, params: any) => {
+          return h('img', {
+            style: {
+              width: '40px',
+              height: '40px',
+              verticalAlign: 'middle'
+            },
+            attrs: {
+              src: params.row.image_url
+            }
+          })
+        }
+      },
+      {
+        title: '地址',
+        key: 'image_url'
+      },
+      {
+        title: '操作',
+        width: 180,
+        key: 'action',
+        render: (h: any, params: any) => {
+          return h('div', (() => {
+            let a = [];
+
+            a.push(h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.$Modal.confirm({
+                    title: params.row.image_origin_name,
+                    render: (h: any) => {
+                      return h('div', {
+                        style: {marginTop: '10px'}
+                      }, [
+                        h('img', {
+                          attrs: {src: params.row.image_url},
+                          style: {width: '100%', height: '100%'}
+                        })
+                      ])
+                    }
+                  })
+                }
+              }
+            }, '预览'));
+
+            a.push(h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.$jDynamic.show({
+                    component: 'mMoveMdl',
+                    data: {
+                      confirmfunc: async (value: { fold_id: string }) => {
+                        let res = await this.$api.uploadInterface.alterUpload({
+                          fold_id: value.fold_id,
+                          _id: params.row._id,
+                        });
+                        let {code, msg, data} = res.data;
+                        if (code === 200) {
+                          this.getUploadList();
+                        }
+                      }
+                    },
+                    render: (h: any) => {
+                      return h(mMoveMdl)
+                    }
+                  });
+                }
+              }
+            }, '修改'));
+
+            a.push(h('Button', {
+              props: {
+                type: 'error',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.$Modal.confirm({
+                    title: '提示',
+                    content: '<p>确定删除？</p>',
+                    onOk: async () => {
+                      let res = await this.$api.uploadInterface.deleteUploadById({
+                        _id: params.row._id,
+                      });
+                      let {code, msg} = res.data;
+                      if (code === 200) {
+                        this.getUploadList();
+                      }
+                      return this.$Message.info(msg)
+                    }
+                  });
+                }
+              }
+            }, '删除'));
+
+            return a;
+          })());
+        }
+      }
+    ];
+
+    created() {
+      this.headers = {
+        Authorization: this.AdminInfo.token
+      }
+    }
+
+    beforeUpload(file: { name: string, size: string }) {
+      this.imageList.push({
+        image_name: file.name,
+        image_size: file.size,
+        file
+      })
+    }
+
+    onProgress() {
+      this.$Spin.show();
+    }
+
+    async onSuccess(response: any) {
+      this.imageList.pop();
+      if (response.code === 200 && !this.imageList.length) {
+        this.$Spin.hide();
+        await this.getUploadList();
+        this.$Message.info(response.msg)
+      }
+    }
+
+    async renderFinishFunc(value: any) {
+      this.treeList = value.treeList;
+      if (value && value.treeList.length) {
+        await this.getUploadList();
+
+        return false
+      }
+
+      this.list.splice(0, this.list.length);
+    }
+
+    async onClickFunc() {
+      await this.getUploadList();
+    }
+
+    handleUpload() {
+      if (!this.treeList.length) {
+        return this.$Message.info('请先创建目录')
+      }
+
+      let _id = '';
+      let selectId = this.$Global.VueDB().getItem('selectId', 'sessionStorage').toString();
+      if (selectId) _id = selectId;
+      this.action = `${process.env.api.common_url}/api/upload/pic/${_id}`;
+    }
+
+    /**
+     * 获取列表数据
+     */
+    async getUploadList() {
+      this.list = [];
+      let selectId = this.$Global.VueDB().getItem('selectId', 'sessionStorage').toString();
+
+      let res = await this.$api.uploadInterface.getUploadList({
+        id: selectId,
+        current_page: this.current_page,
+        page_size: this.page_size
+      });
+
+      let {code, data} = res.data;
+      if (code === 200) {
+        this.list = data.list;
+        this.total_count = data.total;
+      }
+    }
+
+    async changePage(targetPage: number) {
+      this.current_page = targetPage;
+      await this.getUploadList();
+    }
+
+    trash(param: { type: number }) {
+      // type：0 单个 type：1 批量
+      let type = param.type;
+      let getSelection = (this.$refs.fileTable as any).getSelection();
+
+      switch (type) {
+        case 1:
+          if (getSelection.length) {
+            let a: any[] = [];
+            getSelection.forEach((m: any) => a.push(m.modelId));
+            this.$Modal.confirm({
+              title: '提示',
+              content: '<p>确定删除？</p>',
+              onOk: async () => {
+                let res = await this.$api.uploadInterface.deleteUploadById({
+                  modelIdList: JSON.stringify(a)
+                });
+
+                let {code, msg} = res.data;
+                if (code === 200) {
+                  this.current_page = 1;
+                  await this.getUploadList();
+                  return false
+                }
+                this.$Message.info(msg);
+              }
+            });
+          } else {
+            this.$Message.info('请选择模型')
+          }
+          break;
+      }
+    }
+  }
+</script>
+<!--<script>
   import {mapGetters} from 'vuex';
   import treeMenu from '@/components/tree-menu/tree-menu.vue';
   import mMoveMdl from '@/components/j-modal/move/m-move-mdl.vue';
@@ -347,4 +637,4 @@
       }
     }
   }
-</script>
+</script>-->

@@ -23,38 +23,48 @@
   </Card>
 </template>
 
-<script>
-  export default {
-    name: "upyun",
-    data() {
-      return {
-        upyun_cos: {
-          bucket: '',
-          operatorname: '',
-          operatorpwd: '',
-          endpoint: 'v0'
-        }
-      }
-    },
-    mounted() {
-      this.init()
-    },
-    methods: {
-      async init() {
-        let res = await this.$api.settingInterface.getSetting();
-        let {code, msg, data = {}} = res.data;
-        let info = data.info;
-        let upyun_cos = info.upyun_cos;
-        if (upyun_cos) this.upyun_cos = upyun_cos
-      },
-      async save() {
-        let params = {
-          upyun_cos: JSON.stringify(this.upyun_cos)
-        };
-        let res = await this.$api.settingInterface.alterSetting(params);
-        let {code, msg, data = []} = res.data;
-        return this.$Message.info(msg)
-      }
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
+
+  interface UpyunCos {
+    bucket: string;
+    operatorname: string;
+    operatorpwd: string;
+    endpoint: string;
+  }
+
+  @Component({
+    name: 'upyun'
+  })
+  export default class Upyun extends Vue {
+
+    upyun_cos: UpyunCos = {
+      bucket: '',
+      operatorname: '',
+      operatorpwd: '',
+      endpoint: 'v0'
+    };
+
+    async created() {
+      await this.onLoad()
     }
+
+    async onLoad() {
+      let res = await this.$api.settingInterface.getSetting();
+      let {code, msg, data = {}} = res.data;
+      let info = data.info;
+      let upyun_cos = info.upyun_cos;
+      if (upyun_cos) this.upyun_cos = upyun_cos
+    }
+
+    async save() {
+      let params = {
+        upyun_cos: JSON.stringify(this.upyun_cos)
+      };
+      let res = await this.$api.settingInterface.alterSetting(params);
+      let {code, msg, data = []} = res.data;
+      return this.$Message.info(msg)
+    }
+
   }
 </script>

@@ -44,8 +44,8 @@ const getters: GetterTree<any, any> = {};
 const actions: ActionTree<any, any> = {};
 
 // mutations
-const mutations: MutationTree<any> = {
-  [types.UPDATE_MENU_LIST](state: State, payload: null) {
+const mutations: MutationTree<State> = {
+  [types.UPDATE_MENU_LIST](state: State, payload: string) {
     let menuList: any[] = [];
     appRouter.forEach((item: any) => {
       let len = menuList.push(item);

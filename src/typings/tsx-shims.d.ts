@@ -24,5 +24,8 @@ declare module "vue/types/vue" {
     $api: any;
     $Message: any;
     $Modal: any;
+    $jDynamic: any;
+    $Spin: any;
+    $Global:any;
   }
 }
