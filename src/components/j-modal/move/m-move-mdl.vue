@@ -51,7 +51,7 @@
 
 <script>
   import jTree from '@/components/j-tree/jTree.vue';
-  import util from '@/libs/util';
+  import {getCurrentNode} from '@/libs/util';
 
   export default {
     name: "m-move-mdl",
@@ -119,7 +119,7 @@
                 };
                 this.$Global.VueDB().setItem('selectModelFoldId', first._id, 'sessionStorage');
               } else {
-                util.getCurrentNode(this.tree.treeList, {_id: selectId}, 'nodes', data => {
+                getCurrentNode(this.tree.treeList, {_id: selectId}, 'nodes', data => {
                   data.node && (data.node.selected = true);
 
                   data.node && (this.tree.treeNode = {
@@ -145,7 +145,7 @@
         let currentNodes = [];
         const getNodeData = (() => {
           return (list, keyword, nodes) => {
-            util.getCurrentNode(list, keyword, nodes, data => {
+            getCurrentNode(list, keyword, nodes, data => {
               currentNodes = data.node && data.node.childNodes ? data.node.childNodes : [];
             });
           }
@@ -153,7 +153,7 @@
 
         const setNodeData = (() => {
           return (list, keyword, DEFAULT, nodes) => {
-            util.getCurrentNode(list, keyword, nodes, data => {
+            getCurrentNode(list, keyword, nodes, data => {
               if (data.node) {
                 data.node.openFolder = DEFAULT.open;
 

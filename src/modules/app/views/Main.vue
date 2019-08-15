@@ -6,9 +6,9 @@
     <div class="main-container__sidebar" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
       <shrinkable-menu
         :shrink="shrink"
-        :theme="menuTheme"
+        :theme="getMenuTheme"
         :open-names="openedSubmenuArr"
-        :menu-list="menuList">
+        :menu-list="getMenuList">
         <div slot="top" class="main-container__logo">
                     <span class="main-container__logo--shrink" v-show="!shrink">
                         <!--<img src="../assets/images/logo/logo-min.png" key="max-logo"/>-->
@@ -30,7 +30,7 @@
         </div>
         <div class="header-middle-con">
           <div class="main-container__breadcrumb">
-            <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
+            <breadcrumb-nav :currentPath="getCurrentPath"></breadcrumb-nav>
           </div>
         </div>
         <div class="header-avator-con">
@@ -41,14 +41,14 @@
             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
               <Dropdown transfer trigger="click">
                 <a href="javascript:;">
-                  <span class="main-user-name">{{getLoginName}}</span>
+                  <span class="main-user-name">{{getAdminInfo.admin_name}}</span>
                   <Icon type="arrow-down-b"></Icon>
                 </a>
                 <DropdownMenu slot="list">
                   <DropdownItem name="loginout" @click.native="loginOut">退出登录</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <Avatar :src="getAvator" icon="person" style="background: #619fe7;margin-left: 10px;"></Avatar>
+              <Avatar :src="getAdminInfo.avatar" icon="person" style="background: #619fe7;margin-left: 10px;"></Avatar>
             </Row>
           </div>
         </div>
@@ -61,71 +61,70 @@
     </div>
   </div>
 </template>
-<script>
-  import Vue from 'vue';
-  import shrinkableMenu from '@/components/shrinkable-menu/shrinkable-menu.vue';
-  import breadcrumbNav from '@/components/breadcrumb/breadcrumb-nav.vue';
-  import fullScreen from '@/components/fullscreen/fullscreen.vue';
-  import themeSwitch from '@/components/theme-switch/theme-switch.vue';
-  import util from '@/libs/util.js';
 
-  import VueI18n from 'vue-i18n';
+<script lang="ts">
+  import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
+  import {State, Getter, Action, Mutation, namespace} from 'vuex-class';
+  import shrinkableMenu from '../../../components/shrinkable-menu/shrinkable-menu.vue';
+  import breadcrumbNav from '../../../components/breadcrumb/breadcrumb-nav.vue';
+  import fullScreen from '../../../components/fullscreen/fullscreen.vue';
+  import themeSwitch from '../../../components/theme-switch/theme-switch.vue';
+  import {setCurrentPath} from '../../../libs/util';
 
-  Vue.use(VueI18n);
+  const ModuleApp = namespace('app/');
+  const ModuleUser = namespace('user/');
 
-  export default {
+  interface AdminInfo {
+    admin_name: string;
+    avatar: string;
+  }
+
+  @Component({
+    name: 'main',
     components: {
       shrinkableMenu,
       breadcrumbNav,
       fullScreen,
       themeSwitch
-    },
-    data() {
-      return {
-        shrink: false,
-        isFullScreen: false,
-        openedSubmenuArr: this.$store.state.app.openedSubmenuArr
-      };
-    },
-    computed: {
-      getLoginName() {
-        return this.$store.state.user.adminInfo.admin_name;
-      },
-      getAvator() {
-        return '/static/images/logo/avatar.jpg';
-      },
-      menuList() {
-        return this.$store.state.app.menuList;
-      },
-      currentPath() {
-        return this.$store.state.app.currentPath; // 当前面包屑数组
-      },
-      menuTheme() {
-        return this.$store.state.app.menuTheme;
-      }
-    },
+    }
+  })
+  export default class Main extends Vue {
+
+    @ModuleApp.State('openedSubmenuArr') private openedSubmenuArr!: Array<any>;
+    @ModuleApp.Getter('getMenuList') public getMenuList!: Array<any>;
+    @ModuleApp.Getter('getCurrentPath') public getCurrentPath!: Array<any>;
+    @ModuleApp.Getter('getMenuTheme') public getMenuTheme!: string;
+    @ModuleApp.Mutation('ADD_OPEN_SUBMENU') public addOpenSubmenu!: (payload: any) => void;
+
+    @ModuleApp.Mutation('LOGOUT') public logout!: () => void;
+    @ModuleUser.Getter('getAdminInfo') public AdminInfo!: AdminInfo;
+
+    @Watch('$route', {immediate: true, deep: true})
+    public onRoute(val: any, oldVal: any) {
+      setCurrentPath(this, val.name);
+    }
+
+    shrink: boolean = false;
+    isFullScreen: boolean = false;
+
     mounted() {
-      this.init();
-    },
-    methods: {
-      init() {
-        util.setCurrentPath(this, this.$route.name);
-        let openedSubmenuArr = this.$Global.VueDB().getItem('openedSubmenuArr').toJson();
-        if (openedSubmenuArr) {
-          this.$store.commit('addOpenSubmenu', openedSubmenuArr);
-        }
-      },
-      loginOut() {
-        this.$store.commit("logout");
-        this.$router.push({
-          name: 'login'
-        });
-      }
-    },
-    watch: {
-      '$route'(to) {
-        util.setCurrentPath(this, to.name)
+      this.onLoad()
+    }
+
+    onLoad() {
+      setCurrentPath(this, this.$route.name);
+      let openedSubmenuArr = this.$Global.VueDB().getItem('openedSubmenuArr').toJson();
+      if (openedSubmenuArr) {
+        this.addOpenSubmenu(openedSubmenuArr)
       }
     }
-  };
+
+    loginOut() {
+      this.logout();
+      this.$router.push({
+        name: 'login'
+      });
+    }
+
+  }
 </script>

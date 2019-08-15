@@ -7,9 +7,17 @@
  */
 
 import {otherRouter, appRouter} from '../../router/router';
-import * as types from '../mutation-types';
 import {GetterTree, ActionTree, MutationTree} from 'vuex';
 import {State} from "vuex-class";
+
+const types = {
+  UPDATE_MENU_LIST: 'UPDATE_MENU_LIST',
+  CHANGE_MENU_THEME: 'CHANGE_MENU_THEME',
+  CHANGE_MAIN_THEME: 'CHANGE_MAIN_THEME',
+  ADD_OPEN_SUBMENU: 'ADD_OPEN_SUBMENU',
+  SET_CURRENT_PATH: 'SET_CURRENT_PATH',
+  SET_ACTIVE_MENUITEM: 'SET_ACTIVE_MENUITEM'
+};
 
 interface State {
   isFullScreen: boolean;
@@ -38,7 +46,11 @@ const state: State = {
 };
 
 // getters
-const getters: GetterTree<any, any> = {};
+const getters: GetterTree<State, any> = {
+  getMenuList: (state: State) => state.menuList,
+  getCurrentPath: (state: State) => state.currentPath,
+  getMenuTheme: (state: State) => state.menuTheme,
+};
 
 // actions
 const actions: ActionTree<any, any> = {};
@@ -71,7 +83,7 @@ const mutations: MutationTree<State> = {
   [types.CHANGE_MAIN_THEME](state: State, payload: string) {
     state.themeColor = payload;
   },
-  [types.ADD_OPEN_SUBMENU](state: State, payload: object[]) {
+  [types.ADD_OPEN_SUBMENU](state: State, payload: any) {
     [...payload].forEach(m => {
       state.openedSubmenuArr.push(m)
     })

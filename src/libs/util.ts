@@ -1,10 +1,9 @@
-let util = {};
-util.title = function (title) {
+export function title(title: string) {
   title = title || '博客';
   window.document.title = title;
-};
+}
 
-util.inOf = function (arr, targetArr) {
+export function inOf(arr: any[], targetArr: any[]) {
   let res = true;
   arr.forEach(item => {
     if (targetArr.indexOf(item) < 0) {
@@ -12,17 +11,17 @@ util.inOf = function (arr, targetArr) {
     }
   });
   return res;
-};
+}
 
-util.oneOf = function (ele, targetArr) {
+export function oneOf(ele: string, targetArr: any[]) {
   if (targetArr.indexOf(ele) >= 0) {
     return true;
   } else {
     return false;
   }
-};
+}
 
-util.getRouterObjByName = function (routers, name) {
+export function getRouterObjByName(routers: any, name: any):any {
   if (!name || !routers || !routers.length) {
     return null;
   }
@@ -32,32 +31,32 @@ util.getRouterObjByName = function (routers, name) {
     if (item.name === name) {
       return item;
     }
-    routerObj = util.getRouterObjByName(item.children, name);
+    routerObj = getRouterObjByName(item.children, name);
     if (routerObj) {
       return routerObj;
     }
   }
   return null;
-};
+}
 
-util.handleTitle = function (vm, item) {
+export function handleTitle(vm: any, item: any) {
   if (typeof item.title === 'object') {
     return vm.$t(item.title.i18n);
   } else {
     return item.title;
   }
-};
+}
 
-util.getCurrentNode = async function (list, keyword, nodes, cb) {
+export async function getCurrentNode(list: any, keyword: any, nodes: any, cb: any) {
   if (Object.keys(keyword).length > 1) {
     throw new Error('Expression only one object length')
   }
   let parentNode = null;
-  let node = null;
+  let node: any = null;
   let [name] = Object.keys(keyword);
   let value = keyword[name];
   const func = await (() => {
-    return (list, value) => {
+    return (list: any, value: any) => {
       for (let i = 0; i < list.length; i++) {
         if (node) break;
         let obj = list[i];
@@ -85,10 +84,10 @@ util.getCurrentNode = async function (list, keyword, nodes, cb) {
       node: node
     })
   })()
-};
+}
 
-util.setCurrentPath = function (vm, name) {
-  util.getCurrentNode(vm.$store.state.app.routers, {name: name}, 'children', data => {
+export function setCurrentPath(vm: any, name: any) {
+  getCurrentNode(vm.$store.state.app.routers, {name: name}, 'children', (data: any) => {
     vm.$store.commit('setCurrentPath', (() => {
       let a = null;
       if (typeof data.node.crumb === 'function') {
@@ -104,9 +103,10 @@ util.setCurrentPath = function (vm, name) {
       name: vm.$route.name
     });
   });
-};
+}
 
-util.toDefaultPage = function (routers, name, route, next) {
+
+export function toDefaultPage(routers: any, name: string, route: any, next: any) {
   let len = routers.length;
   let i = 0;
   let notHandle = true;
@@ -124,6 +124,5 @@ util.toDefaultPage = function (routers, name, route, next) {
   if (notHandle) {
     next();
   }
-};
+}
 
-export default util;

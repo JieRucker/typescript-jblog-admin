@@ -27,7 +27,7 @@
 <script>
   import sidebarMenu from './components/sidebarMenu.vue';
   import sidebarMenuShrink from './components/sidebarMenuShrink.vue';
-  import util from '@/libs/util';
+  import {oneOf} from '@/libs/util';
 
   export default {
     name: 'shrinkableMenu',
@@ -48,7 +48,7 @@
         type: String,
         default: 'dark',
         validator(val) {
-          return util.oneOf(val, ['dark', 'light']);
+          return oneOf(val, ['dark', 'light']);
         }
       },
       openNames: {

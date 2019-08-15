@@ -6,14 +6,19 @@
  * @Last Modified time: 2019/7/31 下午9:58
  */
 
-import * as types from '../mutation-types';
 import {GetterTree, ActionTree, MutationTree} from 'vuex';
 import {State} from "vuex-class";
+
+const types = {
+  SAVE_ADMIN_INFO: 'SAVE_ADMIN_INFO',
+  LOGOUT: 'LOGOUT'
+};
 
 interface adminInfo {
   token: string;
   admin_name: string;
   admin_id: string;
+  avatar: string;
 }
 
 interface State {
@@ -25,7 +30,8 @@ const state: State = {
   adminInfo: {
     token: window.sessionStorage.getItem('token') || '',
     admin_name: window.sessionStorage.getItem('admin_name') || '',
-    admin_id: window.sessionStorage.getItem('admin_id') || ''
+    admin_id: window.sessionStorage.getItem('admin_id') || '',
+    avatar: '/static/images/logo/avatar.jpg'
   }
 };
 
@@ -48,7 +54,7 @@ const mutations: MutationTree<State> = {
     window.sessionStorage.setItem('admin_name', payload.admin_name);
     window.sessionStorage.setItem('admin_id', payload.admin_id);
   },
-  [types.LOGOUT](state: State, payload: null) {
+  [types.LOGOUT](state: State, payload: any) {
     state.adminInfo.token = '';
     state.adminInfo.admin_name = '';
     state.adminInfo.admin_id = '';
