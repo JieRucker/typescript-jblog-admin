@@ -263,7 +263,7 @@
       this.$Spin.show();
     }
 
-    async onSuccess(response: any) {
+    async onSuccess(response: any): Promise<any> {
       this.imageList.pop();
       if (response.code === 200 && !this.imageList.length) {
         this.$Spin.hide();
