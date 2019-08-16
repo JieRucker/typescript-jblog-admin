@@ -20,141 +20,158 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+  import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
+  import {State, Getter, Action, Mutation, namespace} from 'vuex-class';
   import Cookies from 'js-cookie';
 
-  export default {
-    name: 'themeSwitch',
-    data() {
-      return {
-        themeList: [
-          {
-            name: 'black_b',
-            menu: '#495060',
-            element: '#2d8cf0'
-          },
-          {
-            name: 'black_g',
-            menu: '#495060',
-            element: '#00a854'
-          },
-          {
-            name: 'black_y',
-            menu: '#495060',
-            element: '#e96500'
-          },
-          {
-            name: 'black_r',
-            menu: '#495060',
-            element: '#e43e31'
-          },
-          {
-            name: 'light_b',
-            menu: '#495060',
-            element: '#2d8cf0'
-          },
-          {
-            name: 'light_g',
-            menu: '#495060',
-            element: '#00a854'
-          },
-          {
-            name: 'light_y',
-            menu: '#495060',
-            element: '#e96500'
-          },
-          {
-            name: 'light_r',
-            menu: '#495060',
-            element: '#e43e31'
-          }
-        ]
-      };
-    },
-    methods: {
-      setTheme(themeFile) {
-        let menuTheme = themeFile.substr(0, 1);
-        let mainTheme = themeFile.substr(-1, 1);
-        if (menuTheme === 'b') {
-          // 黑色菜单
-          this.$store.commit('changeMenuTheme', 'dark');
-          menuTheme = 'dark';
-        } else {
-          this.$store.commit('changeMenuTheme', 'light');
-          menuTheme = 'light';
-        }
-        let path = '';
-        let themeLink = document.querySelector('link[name="theme"]');
-        let userName = Cookies.get('user');
-        if (localStorage.theme) {
-          let themeList = JSON.parse(localStorage.theme);
-          let index = 0;
-          let hasThisUser = themeList.some((item, i) => {
-            if (item.userName === userName) {
-              index = i;
-              return true;
-            } else {
-              return false;
-            }
-          });
-          if (hasThisUser) {
-            themeList[index].mainTheme = mainTheme;
-            themeList[index].menuTheme = menuTheme;
-          } else {
-            themeList.push({
-              userName: userName,
-              mainTheme: mainTheme,
-              menuTheme: menuTheme
-            });
-          }
-          localStorage.theme = JSON.stringify(themeList);
-        } else {
-          localStorage.theme = JSON.stringify([{
-            userName: userName,
-            mainTheme: mainTheme,
-            menuTheme: menuTheme
-          }]);
-        }
-        let stylePath = '';
-        stylePath = '/static/css/';
+  const ModuleApp = namespace('app/');
 
-        if (mainTheme !== 'b') {
-          path = stylePath + mainTheme + '.css';
-        } else {
-          path = '';
-        }
-        themeLink.setAttribute('href', path);
+  interface ThemeList {
+    name: string;
+    menu: string;
+    element: string;
+  }
+
+  @Component({
+    name: 'themeSwitch'
+  })
+  export default class ThemeSwitch extends Vue {
+
+    @ModuleApp.State('themeColor') private themeColor!: string;
+    @ModuleApp.Mutation('CHANGE_MENU_THEME') public changeMenuTheme!: (payload: string) => void;
+    @ModuleApp.Mutation('CHANGE_MAIN_THEME') public changeMainTheme!: (payload: string) => void;
+
+    themeList: Array<ThemeList> = [
+      {
+        name: 'black_b',
+        menu: '#495060',
+        element: '#2d8cf0'
+      },
+      {
+        name: 'black_g',
+        menu: '#495060',
+        element: '#00a854'
+      },
+      {
+        name: 'black_y',
+        menu: '#495060',
+        element: '#e96500'
+      },
+      {
+        name: 'black_r',
+        menu: '#495060',
+        element: '#e43e31'
+      },
+      {
+        name: 'light_b',
+        menu: '#495060',
+        element: '#2d8cf0'
+      },
+      {
+        name: 'light_g',
+        menu: '#495060',
+        element: '#00a854'
+      },
+      {
+        name: 'light_y',
+        menu: '#495060',
+        element: '#e96500'
+      },
+      {
+        name: 'light_r',
+        menu: '#495060',
+        element: '#e43e31'
       }
-    },
+    ];
+
     created() {
-      let path = '';
-      path = '/static/css/';
+      this.onLoad();
+    }
+
+    onLoad() {
+      let path = '/static/css/';
 
       let name = Cookies.get('user');
       if (localStorage.theme) {
-        let hasThisUser = JSON.parse(localStorage.theme).some(item => {
+        let hasThisUser = JSON.parse(localStorage.theme).some((item: any) => {
           if (item.userName === name) {
-            this.$store.commit('changeMenuTheme', item.menuTheme);
-            this.$store.commit('changeMainTheme', item.mainTheme);
+            this.changeMenuTheme(item.menuTheme);
+            this.changeMainTheme(item.mainTheme);
             return true;
           } else {
             return false;
           }
         });
         if (!hasThisUser) {
-          this.$store.commit('changeMenuTheme', 'dark');
-          this.$store.commit('changeMainTheme', 'b');
+          this.changeMenuTheme('dark');
+          this.changeMainTheme('b');
         }
       } else {
-        this.$store.commit('changeMenuTheme', 'dark');
-        this.$store.commit('changeMainTheme', 'b');
+        this.changeMenuTheme('dark');
+        this.changeMainTheme('b');
       }
       // 根据用户设置主题
-      if (this.$store.state.app.themeColor !== 'b') {
-        let stylesheetPath = path + this.$store.state.app.themeColor + '.css';
-        let themeLink = document.querySelector('link[name="theme"]');
+      if (this.themeColor !== 'b') {
+        let stylesheetPath = path + this.themeColor + '.css';
+        let themeLink = <HTMLInputElement>document.querySelector('link[name="theme"]');
         themeLink.setAttribute('href', stylesheetPath);
       }
     }
-  };
+
+    setTheme(themeFile: string) {
+      let menuTheme = themeFile.substr(0, 1);
+      let mainTheme = themeFile.substr(-1, 1);
+      if (menuTheme === 'b') {
+        // 黑色菜单
+        this.changeMenuTheme('dark');
+        menuTheme = 'dark';
+      } else {
+        this.changeMenuTheme('light');
+        menuTheme = 'light';
+      }
+      let path = '';
+      let themeLink = <HTMLInputElement>document.querySelector('link[name="theme"]');
+      let userName = Cookies.get('user');
+      if (localStorage.theme) {
+        let themeList = JSON.parse(localStorage.theme);
+        let index = 0;
+        let hasThisUser = themeList.some((item: any, i: any) => {
+          if (item.userName === userName) {
+            index = i;
+            return true;
+          } else {
+            return false;
+          }
+        });
+        if (hasThisUser) {
+          themeList[index].mainTheme = mainTheme;
+          themeList[index].menuTheme = menuTheme;
+        } else {
+          themeList.push({
+            userName: userName,
+            mainTheme: mainTheme,
+            menuTheme: menuTheme
+          });
+        }
+        localStorage.theme = JSON.stringify(themeList);
+      } else {
+        localStorage.theme = JSON.stringify([{
+          userName: userName,
+          mainTheme: mainTheme,
+          menuTheme: menuTheme
+        }]);
+      }
+      let stylePath = '/static/css/';
+
+      if (mainTheme !== 'b') {
+        path = stylePath + mainTheme + '.css';
+      } else {
+        path = '';
+      }
+
+      themeLink.setAttribute('href', path);
+    }
+
+  }
 </script>

@@ -100,8 +100,11 @@
 
 <script lang="ts">
   import {Vue, Component, Prop} from "vue-property-decorator";
+  import {State, Getter, Action, Mutation, namespace} from 'vuex-class';
   import JSEncrypt from 'jsencrypt';
   import THREE from "@/libs/three/three";
+
+  const ModuleUser = namespace('user/');
 
   interface Form {
     phoneNum: string;
@@ -137,6 +140,9 @@
     name: 'login'
   })
   export default class Login extends Vue {
+
+    @ModuleUser.Mutation('SAVE_ADMIN_INFO') public saveAdminInfo!: (hobby: any) => void;
+
     form: Form = {
       phoneNum: '',
       password: '',
@@ -158,14 +164,14 @@
     checkCodeImg: string = '';
     interval: any = null;
 
-    get loginStyle(): object {
+    get loginStyle() {
       return {
         backgroundImage: `url(${process.env.api.static_url}static/images/login/login-bg.jpg)`,
       }
     }
 
-    created(): void {
-      this.getCode();
+    async created() {
+      await this.getCode();
     }
 
     async getCode() {
@@ -187,7 +193,7 @@
           if (code === 200) {
 
             let publicKey = data;
-            let encrypt = (new JSEncrypt as any).JSEncrypt();
+            let encrypt = new JSEncrypt.JSEncrypt();
             encrypt.setPublicKey(publicKey);
 
             let params = {
@@ -197,7 +203,7 @@
               token: this.checkCodeToken
             };
 
-            this.loginInterface(params);
+            await this.loginInterface(params);
           }
         }
       });
@@ -210,13 +216,12 @@
       if (code === 200) {
         this.$Message.info('登录成功！');
 
-        this.$store.commit("saveAdminInfo", {
+        this.saveAdminInfo({
           admin_id: data.admin_id || '',
           admin_name: data.admin_name || '',
           token: data.token || ''
         });
 
-        // let redirectUrl = decodeURIComponent(this.$route.query.redirect || '/article/article-list');
         //跳转到指定的路由
         this.$router.push({
           path: '/article/article-list'

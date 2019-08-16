@@ -143,8 +143,6 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         const copyPath = {
           '../src/assets/images': 'static/images',
           '../src/components/theme-switch/theme': 'static/css',
-          '../src/libs/jquery/jquery.min.js': 'static/js',
-          '../src/libs/uploader/uploader.min.js': 'static/js',
         };
 
         const getArray = fn => (...args) => fn.apply(this, args);

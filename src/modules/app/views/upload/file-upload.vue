@@ -54,16 +54,15 @@
             <Table ref="fileTable" :columns="columns" :data="list"></Table>
             <div style="margin: 10px;overflow: hidden">
               <div style="float: right;">
-                <Page :total="table.args.total_count"
-                      :current="table.args.current_page"
-                      :page-size="table.args.page_size"
+                <Page :total="total_count"
+                      :current="current_page"
+                      :page-size="page_size"
                       show-total @on-change="changePage"></Page>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>

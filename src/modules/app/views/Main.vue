@@ -80,7 +80,7 @@
   }
 
   @Component({
-    name: 'main',
+    name: 'Main',
     components: {
       shrinkableMenu,
       breadcrumbNav,
@@ -97,11 +97,11 @@
     @ModuleApp.Mutation('ADD_OPEN_SUBMENU') public addOpenSubmenu!: (payload: any) => void;
 
     @ModuleApp.Mutation('LOGOUT') public logout!: () => void;
-    @ModuleUser.Getter('getAdminInfo') public AdminInfo!: AdminInfo;
+    @ModuleUser.Getter('getAdminInfo') public getAdminInfo!: AdminInfo;
 
     @Watch('$route', {immediate: true, deep: true})
     public onRoute(val: any, oldVal: any) {
-      setCurrentPath(this, val.name);
+      // setCurrentPath(this, val.name);
     }
 
     shrink: boolean = false;
@@ -112,7 +112,7 @@
     }
 
     onLoad() {
-      setCurrentPath(this, this.$route.name);
+      // setCurrentPath(this, this.$route.name);
       let openedSubmenuArr = this.$Global.VueDB().getItem('openedSubmenuArr').toJson();
       if (openedSubmenuArr) {
         this.addOpenSubmenu(openedSubmenuArr)

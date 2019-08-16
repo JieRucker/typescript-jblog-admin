@@ -130,7 +130,7 @@
         key: 'article_state',
         render: (h: any, params: any) => {
           return h('div', [
-            h('Span', {}, ArticleList.formatState(params.row.article_state))
+            h('Span', {}, this.formatState(params.row.article_state))
           ]);
         }
       },
@@ -256,7 +256,7 @@
       await this.getArticleList();
     }
 
-    static formatState(val: number): string {
+    formatState(val: number): string {
       return val === 0 ? "草稿" : "发布";
     }
 

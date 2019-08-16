@@ -139,8 +139,6 @@ const webpackConfig = merge(baseWebpackConfig, {
         const copyPath = {
           '../src/assets/images': 'static/images',
           '../src/components/theme-switch/theme': 'static/css',
-          '../src/libs/jquery/jquery.min.js': 'static/js',
-          '../src/libs/uploader/uploader.min.js': 'static/js',
           // '../src/template/refresh.vm': [config.build.vmRoot + '/frame', config.build.vmLoginRoot + '/frame'],
         };
 

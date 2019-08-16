@@ -6,13 +6,11 @@ import {router} from './router';
 import store from './vuex';
 import App from './app.vue';
 import 'iview/dist/styles/iview.css';
-import VueI18n from 'vue-i18n';
 import wyboot from '@/libs/wyboot';
 import api from '@/api/server';
 import JsEncrypt from 'jsencrypt';
 import jDynamic from '@/components/j-dynamic';
 
-Vue.use(VueI18n);
 Vue.use(iView);
 
 Vue.prototype.$api = api;
