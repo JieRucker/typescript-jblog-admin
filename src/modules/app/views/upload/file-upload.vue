@@ -95,6 +95,7 @@
     headers: any = {};
     action: string = '';
     list: Array<any> = [];
+
     /*目录*/
     treeList: Array<any> = [];
     imageList: Array<any> = [];
