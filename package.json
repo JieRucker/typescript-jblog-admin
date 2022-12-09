@@ -13,7 +13,7 @@
     "webpack": "webpack --config build/webpack.dll.conf.js"
   },
   "dependencies": {
-    "express": "^4.16.2",
+    "express": "^4.18.2",
     "fastclick": "^1.0.6",
     "iview": "^2.8.0",
     "jsencrypt": "^2.3.1",
